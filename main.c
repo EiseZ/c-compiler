@@ -24,7 +24,7 @@ void main(int argc, char *argv[]) {
 
   struct ASTnode *n;
   scan(&token); // Get first token
-  n = binexpr();
+  n = binexpr(0);
   printf("%d\n", interpretAST(n));
 
   exit(0);

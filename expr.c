@@ -36,28 +36,52 @@ static struct ASTnode *primary(void) {
   }
 }
 
+// Table of the precedence of the tokens
+static int operatorPrecedence[] = {0, 10, 10, 20, 20, 0};
+//                                 EOF  +   -   *   /  INTLIT
+
+// Return precedence if token is operator
+static int operator_precedence(int tokentype) {
+  int prec = operatorPrecedence[tokentype];
+  if (prec == 0) {
+    fprintf(stderr, "Syntax error on line %d, token %d\n", line, tokentype);
+    exit(1);
+  }
+  return (prec);
+}
+
 // Return AST tree with binary operator as root
-struct ASTnode *binexpr(void) {
-  struct ASTnode *n, *left, *right;
-  int nodetype;
+// ptp is previous tokens precedence
+struct ASTnode *binexpr(int ptp) {
+  struct ASTnode *left, *right;
+  int tokentype;
 
   // Get integer on left of operator
+  // And fetch next token
   left = primary();
+
   // Return only left node if no tokens left
-  if (token.token == T_EOF) {
+  tokentype = token.token;
+  if (tokentype == T_EOF) {
     return (left);
   }
 
-  // Convert token into node
-  nodetype = toktoopr(token.token);
+  while (operator_precedence(tokentype) > ptp) {
+    // Fetch next integer literal
+    scan(&token);
 
-  // Get next token
-  scan(&token);
+    // Make right tree recursively
+    right = binexpr(operatorPrecedence[tokentype]);
 
-  // Get everything on right
-  right = binexpr();
+    // Create node tree
+    left = mkastnode(toktoopr(tokentype), left, right, 0);
 
-  // Build the tree
-  n = mkastnode(nodetype, left, right, 0);
-  return (n);
+    // Return if EOF
+    tokentype = token.token;
+    if (tokentype == T_EOF) {
+      return (left);
+    }
+  }
+
+  return (left);
 }
