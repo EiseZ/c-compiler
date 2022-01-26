@@ -1,5 +1,5 @@
 all:
-	tcc -o compiler src/main.c src/scan.c src/tree.c src/expr.c src/interp.c
+	tcc -o compiler src/main.c src/scan.c src/tree.c src/expr.c src/interp.c src/gen.c src/cg.c
 
 test:
 	./compiler input/input01
