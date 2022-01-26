@@ -15,7 +15,7 @@ gencode(struct ASTnode *n)
 }
 
 // Generate assembly from given AST
-static int
+int
 genAST(struct ASTnode *n)
 {
     int leftreg, rightreg;
@@ -43,3 +43,9 @@ genAST(struct ASTnode *n)
         exit(1);
     }
 }
+
+// Define simple functions so we don't have to call any function from cg.c
+void genpreamble()          { cgpreamble(); }
+void genpostamble()         { cgpostamble(); }
+void genfreeregs()          { freeallregisters(); }
+void genprintint(int reg)   { cgprintint(reg); }

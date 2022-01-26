@@ -4,7 +4,7 @@
 
 // Names of registers, and if they're free
 static int freereg[4];
-static char *reglist[4] = {"%r8", "%r9", "%r10", "%r11"};
+static char *reglist[4] = { "%r8", "%r9", "%r10", "%r11" };
 
 // Set all registers as available
 void
@@ -73,7 +73,7 @@ cgmul(int r1, int r2)
 int
 cgsub(int r1, int r2)
 {
-    fprintf(outfile, "\tsubq\t%s, %s\n", reglist[r1], reglist[r2]);
+    fprintf(outfile, "\tsubq\t%s, %s\n", reglist[r2], reglist[r1]);
     freeregister(r2);
     return (r1);
 }

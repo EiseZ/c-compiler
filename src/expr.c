@@ -67,9 +67,9 @@ binexpr(int ptp)
     // And fetch next token
     left = primary();
 
-    // Return only left node if no tokens left
+    // Return only left node if we're at the end of the expression
     tokentype = token.token;
-    if (tokentype == T_EOF) {
+    if (tokentype == T_SEMICOLON) {
         return (left);
     }
 
@@ -83,9 +83,9 @@ binexpr(int ptp)
         // Create node tree
         left = mkastnode(toktoopr(tokentype), left, right, 0);
 
-        // Return if EOF
+        // Return only left node if we're at the end of the expression
         tokentype = token.token;
-        if (tokentype == T_EOF) {
+        if (tokentype == T_SEMICOLON) {
             return (left);
         }
     }

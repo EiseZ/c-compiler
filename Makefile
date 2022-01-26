@@ -1,12 +1,10 @@
 all:
-	tcc -o compiler src/main.c src/scan.c src/tree.c src/expr.c src/interp.c src/gen.c src/cg.c
+	tcc -o compiler src/main.c src/scan.c src/tree.c src/expr.c src/interp.c src/gen.c src/cg.c src/stmt.c src/misc.c
 
 test:
-	./compiler input/input01
-	./compiler input/input02
-	-./compiler input/input03
-	-./compiler input/input04
-	-./compiler input/input05
+	./compiler input/input
+	cc -o out out.s
+	./out
 
 clean:
-	rm -f compiler *.o
+	rm -f compiler *.o out.s out

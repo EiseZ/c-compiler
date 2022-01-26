@@ -26,16 +26,15 @@ main(int argc, char *argv[])
         exit(1);
     }
 
-    if ((outfile = fopen("out.asm", "w")) == NULL) {
+    if ((outfile = fopen("out.s", "w")) == NULL) {
         fprintf(stderr, "Unable to open out.asm: %s\n", strerror(errno));
         exit(1);
     }
 
-    struct ASTnode *n;
     scan(&token); // Get first token
-    n = binexpr(0);
-    printf("%d\n", interpretAST(n));
-    gencode(n);
+    genpreamble();
+    statements(); // Parse statements
+    genpostamble();
 
     fclose(outfile);
     exit(0);

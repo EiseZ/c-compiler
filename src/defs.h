@@ -4,7 +4,7 @@
 #include <ctype.h>
 
 // Possible tokens
-enum { T_EOF, T_PLUS, T_MINUS, T_STAR, T_SLASH, T_INTLIT };
+enum { T_EOF, T_PLUS, T_MINUS, T_STAR, T_SLASH, T_INTLIT, T_SEMICOLON, T_PRINT };
 
 // Token structure
 struct token {
