@@ -2,29 +2,17 @@
 #include "data.h"
 #include "decl.h"
 
-// Generate full code from AST
-void
-gencode(struct ASTnode *n)
-{
-    int reg;
-
-    cgpreamble();
-    reg = genAST(n);
-    cgprintint(reg);
-    cgpostamble();
-}
-
 // Generate assembly from given AST
 int
-genAST(struct ASTnode *n)
+genAST(struct ASTnode *n, int reg)
 {
     int leftreg, rightreg;
 
     if (n->left) {
-        leftreg = genAST(n->left);
+        leftreg = genAST(n->left, -1);
     }
     if (n->right) {
-        rightreg = genAST(n->right);
+        rightreg = genAST(n->right, leftreg);
     }
 
     switch (n->operation) {
@@ -37,10 +25,16 @@ genAST(struct ASTnode *n)
     case A_DIVIDE:
         return (cgdiv(leftreg, rightreg));
     case A_INTLIT:
-        return (cgload(n->intvalue));
+        return (cgloadint(n->v.intvalue));
+    case A_IDENT:
+        return (cgloadglob(gsym[n->v.id].name));
+    case A_LVIDENT:
+        return (cgstorglob(reg, gsym[n->v.id].name));
+    case A_ASSIGN:
+        // This has already been done
+        return (rightreg);
     default:
-        fprintf(stderr, "Unknow AST operator %d\n", n->operation);
-        exit(1);
+        fatald("Unknow AST operation", n->operation);
     }
 }
 
@@ -49,3 +43,4 @@ void genpreamble()          { cgpreamble(); }
 void genpostamble()         { cgpostamble(); }
 void genfreeregs()          { freeallregisters(); }
 void genprintint(int reg)   { cgprintint(reg); }
+void genglobsym(char *s)    { cgglobsym(s); }

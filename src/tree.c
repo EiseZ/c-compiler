@@ -12,15 +12,14 @@ mkastnode(int operation, struct ASTnode *left, struct ASTnode *right,
     // Create node
     n = (struct ASTnode *)malloc(sizeof(struct ASTnode));
     if (n == NULL) {
-        fprintf(stderr, "Unable to alocate memory in 'mkastnode()'\n");
-        exit(1);
+        fatal("Unable to alocate memory in 'mkastnode()'");
     }
 
     // Build node
     n->operation = operation;
     n->left = left;
     n->right = right;
-    n->intvalue = intvalue;
+    n->v.intvalue = intvalue;
     return (n);
 }
 

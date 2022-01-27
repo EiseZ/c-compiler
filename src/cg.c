@@ -24,8 +24,7 @@ allocregister(void)
             return (i);
         }
     }
-    fprintf(stderr, "Out of registers\n");
-    exit(1);
+    fatal("Out of registers");
 }
 
 // Free a register
@@ -33,15 +32,14 @@ static void
 freeregister(int reg)
 {
     if (freereg[reg] != 0) {
-        fprintf(stderr, "Trying to free already free register %d\n", reg);
-        exit(1);
+        fatald("Trying to free already free register", reg);
     }
     freereg[reg] = 1;
 }
 
 // Allocate register and move value into it
 int
-cgload(int value)
+cgloadint(int value)
 {
     // Get new register
     int r = allocregister();
@@ -49,6 +47,32 @@ cgload(int value)
     // Generate code
     fprintf(outfile, "\tmovq\t$%d, %s\n", value, reglist[r]);
     return (r);
+}
+
+// Load value from global symbol into register
+int
+cgloadglob(char *identifier)
+{
+    // Get new register
+    int r = allocregister();
+
+    fprintf(outfile, "\tmovq\t%s(\%%rip), %s\n", identifier, reglist[r]);
+    return (r);
+}
+
+// Store value from register into variable
+int
+cgstorglob(int r, char *identifier)
+{
+    fprintf(outfile, "\tmovq\t%s, %s(\%%rip)\n", reglist[r], identifier);
+    return (r);
+}
+
+// Generate new global symbol
+void
+cgglobsym(char *sym)
+{
+    fprintf(outfile, "\t.comm\t%s, 8, 8\n", sym);
 }
 
 // Add value of register 1 and register 2, value is stored in register 2

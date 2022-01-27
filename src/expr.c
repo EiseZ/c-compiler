@@ -16,27 +16,36 @@ toktoopr(int tok)
     case T_SLASH:
         return (A_DIVIDE);
     default:
-        fprintf(stderr, "Unknow token %d in 'toktoopr()' on line %d\n", tok, line);
-        exit(1);
+        fatald("Syntax error, token", tok);
     }
 }
 
-// Check if token is primary factor (int)
+// Check if token is primary factor (int or global symbol)
 // if so, return AST node
 static struct ASTnode *
 primary(void)
 {
     struct ASTnode *n;
+    int id;
 
     switch (token.token) {
         case T_INTLIT:
             n = mkastleaf(A_INTLIT, token.intvalue);
-            scan(&token);
-            return (n);
+            break;
+        case T_IDENT:
+            // Check if inentifier exists
+            id = findglob(text);
+            if (id == -1) {
+                fatals("Unknow variable", text);
+            }
+
+            n = mkastleaf(A_IDENT, id);
+            break;
         default:
-            fprintf(stderr, "Syntax error on line %d\n", line);
-            exit(1);
+            fatald("Syntax error, token ", token.token);
     }
+    scan(&token);
+    return (n);
 }
 
 // Table of the precedence of the tokens
@@ -49,8 +58,7 @@ operator_precedence(int tokentype)
 {
     int prec = operatorPrecedence[tokentype];
     if (prec == 0) {
-        fprintf(stderr, "Syntax error on line %d, token %d\n", line, tokentype);
-        exit(1);
+        fatald("Syntax error, token", tokentype);
     }
     return (prec);
 }

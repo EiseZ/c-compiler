@@ -25,9 +25,8 @@ interpretAST(struct ASTnode *n)
     case A_DIVIDE:
         return (leftval / rightval);
     case A_INTLIT:
-        return (n->intvalue);
+        return (n->v.intvalue);
     default:
-        fprintf(stderr, "Unknow AST operation %d\n", n->operation);
-        exit(1);
+        fatald("Unknow AST operation", n->operation);
     }
 }

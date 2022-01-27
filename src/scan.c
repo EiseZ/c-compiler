@@ -61,6 +61,11 @@ keyword(char *s) {
             return (T_PRINT);
         }
         break;
+    case 'i':
+        if(!strcmp(s, "int")) {
+            return (T_INT);
+        }
+        break;
     }
     return (0);
 }
@@ -90,8 +95,7 @@ scanidentifier(int c, char *buf, int lim) {
     while (isalpha(c) || isdigit(c) || c == '_') {
         // Error when we hit lenght limit
         if (i == lim - 1) {
-            printf("Identifier too long on line %d\n", line);
-            exit(1);
+            fatal("To long identifier");
         } else if (i < lim - 1) {
             // Put char in buf
             buf[i++] = c;
@@ -136,6 +140,9 @@ scan(struct token *t)
     case ';':
         t->token = T_SEMICOLON;
         break;
+    case '=':
+        t->token = T_EQUALS;
+        break;
     default:
         if (isdigit(c)) {
             t->intvalue = scanint(c);
@@ -151,12 +158,10 @@ scan(struct token *t)
                 break;
             }
 
-            // No recognices so trow an error
-            printf("Unrecognised symbol %s on line %d\n", text, line);
-            exit(1);
+            t->token = T_IDENT;
+            break;
         }
-        printf("Invalid character %c on line %d\n", c, line);
-        exit(1);
+        fatalc("Invalid char", c);
     }
 
     return (1);
