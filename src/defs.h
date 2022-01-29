@@ -17,7 +17,7 @@ enum {
     T_INTLIT, T_SEMICOLON, T_ASSIGN, T_IDENT,
     T_LEFTBRACE, T_RIGHTBRACE, T_LEFTPAREN, T_RIGHTPAREN,
     // Keywords
-    T_PRINT, T_INT, T_IF, T_ELSE, T_WHILE,
+    T_PRINT, T_INT, T_IF, T_ELSE, T_WHILE, T_FOR,
 };
 
 // Token structure

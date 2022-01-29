@@ -37,6 +37,7 @@ void cglabel(int l);
 void cgjump(int l);
 
 struct ASTnode *compound_statement(void);
+static struct ASTnode *single_statement(void);
 
 void match(int t, char *what);
 void semi(void);

@@ -77,6 +77,10 @@ keyword(char *s) {
         if(!strcmp(s, "while")) {
             return (T_WHILE);
         }
+    case 'f':
+        if(!strcmp(s, "for")) {
+            return (T_FOR);
+        }
     }
     return (0);
 }

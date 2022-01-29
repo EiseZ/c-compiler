@@ -25,16 +25,16 @@ main:
 	movq	%r8, i(%rip)
 L1:
 	movq	i(%rip), %r8
-	movq	$1410065408, %r9
+	movq	$10, %r9
 	cmpq	%r9, %r8
 	jg	L2
 	movq	i(%rip), %r8
-	movq	$2, %r9
-	imulq	%r8, %r9
-	movq	%r9, i(%rip)
-	movq	i(%rip), %r8
 	movq	%r8, %rdi
 	call	printint
+	movq	i(%rip), %r8
+	movq	$1, %r9
+	addq	%r8, %r9
+	movq	%r9, i(%rip)
 	jmp	L1
 L2:
 	movl	$0, %eax

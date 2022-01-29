@@ -1,2 +1,3 @@
 compiler
-out.asm
+out.s
+out
