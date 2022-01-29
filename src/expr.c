@@ -3,21 +3,13 @@
 #include "decl.h"
 
 // Scan token to AST operation
-int
-toktoopr(int tok)
+static int
+toktoopr(int tokentype)
 {
-    switch (tok) {
-    case T_PLUS:
-        return (A_ADD);
-    case T_MINUS:
-        return (A_SUBTRACT);
-    case T_STAR:
-        return (A_MULTIPLY);
-    case T_SLASH:
-        return (A_DIVIDE);
-    default:
-        fatald("Syntax error, token", tok);
+    if (tokentype > T_EOF && tokentype < T_INTLIT) {
+        return (tokentype);
     }
+    fatald("Syntax error, token", tokentype);
 }
 
 // Check if token is primary factor (int or global symbol)
@@ -49,8 +41,8 @@ primary(void)
 }
 
 // Table of the precedence of the tokens
-static int operatorPrecedence[] = {0, 10, 10, 20, 20, 0};
-//                                 EOF  +   -   *   /  INTLIT
+static int operatorPrecedence[] = {0, 10, 10, 20, 20, 30, 30, 40, 40, 40, 40};
+//                                 EOF  +   -   *   / ==  !=   <   >  <=  >=
 
 // Return precedence if token is operator
 static int
@@ -77,7 +69,7 @@ binexpr(int ptp)
 
     // Return only left node if we're at the end of the expression
     tokentype = token.token;
-    if (tokentype == T_SEMICOLON) {
+    if (tokentype == T_SEMICOLON || tokentype == T_RIGHTPAREN) {
         return (left);
     }
 
@@ -89,11 +81,11 @@ binexpr(int ptp)
         right = binexpr(operatorPrecedence[tokentype]);
 
         // Create node tree
-        left = mkastnode(toktoopr(tokentype), left, right, 0);
+        left = mkastnode(toktoopr(tokentype), left, NULL, right, 0);
 
         // Return only left node if we're at the end of the expression
         tokentype = token.token;
-        if (tokentype == T_SEMICOLON) {
+        if (tokentype == T_SEMICOLON || tokentype == T_RIGHTPAREN) {
             return (left);
         }
     }

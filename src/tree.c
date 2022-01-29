@@ -4,8 +4,8 @@
 
 // Create AST node
 struct ASTnode *
-mkastnode(int operation, struct ASTnode *left, struct ASTnode *right,
-    int intvalue)
+mkastnode(int operation, struct ASTnode *left, struct ASTnode * mid,
+    struct ASTnode *right, int intvalue)
 {
     struct ASTnode *n;
 
@@ -18,6 +18,7 @@ mkastnode(int operation, struct ASTnode *left, struct ASTnode *right,
     // Build node
     n->operation = operation;
     n->left = left;
+    n->mid = mid;
     n->right = right;
     n->v.intvalue = intvalue;
     return (n);
@@ -27,12 +28,12 @@ mkastnode(int operation, struct ASTnode *left, struct ASTnode *right,
 struct ASTnode *
 mkastleaf(int operation, int intvalue)
 {
-    return (mkastnode(operation, NULL, NULL, intvalue));
+    return (mkastnode(operation, NULL, NULL, NULL, intvalue));
 }
 
 // Create AST unary (1 child)
 struct ASTnode *
 mkastunary(int operation, struct ASTnode *left, int intvalue)
 {
-    return (mkastnode(operation, left, NULL, intvalue));
+    return (mkastnode(operation, left, NULL, NULL, intvalue));
 }

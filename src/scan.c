@@ -64,8 +64,19 @@ keyword(char *s) {
     case 'i':
         if(!strcmp(s, "int")) {
             return (T_INT);
+        } else if (!strcmp(s, "if")) {
+            return (T_IF);
         }
         break;
+    case 'e':
+        if(!strcmp(s, "else")) {
+            return (T_ELSE);
+        }
+        break;
+    case 'w':
+        if(!strcmp(s, "while")) {
+            return (T_WHILE);
+        }
     }
     return (0);
 }
@@ -140,8 +151,48 @@ scan(struct token *t)
     case ';':
         t->token = T_SEMICOLON;
         break;
+    case '{':
+      t->token = T_LEFTBRACE;
+      break;
+    case '}':
+      t->token = T_RIGHTBRACE;
+      break;
+    case '(':
+      t->token = T_LEFTPAREN;
+      break;
+    case ')':
+      t->token = T_RIGHTPAREN;
+      break;
     case '=':
-        t->token = T_EQUALS;
+        if ((c = next()) == '=') {
+            t->token = T_EQUALS;
+        } else {
+            goback(c);
+            t->token = T_ASSIGN;
+        }
+        break;
+    case '!':
+        if ((c = next()) == '=') {
+            t->token = T_NOTEQUALS;
+        } else {
+            fatalc("Unrecognised character", c);
+        }
+        break;
+    case '<':
+        if ((c = next()) == '=') {
+            t->token = T_LESSEQUALS;
+        } else {
+            goback(c);
+            t->token = T_LESSTHAN;
+        }
+        break;
+    case '>':
+        if ((c = next()) == '=') {
+            t->token = T_GREATEREQUALS;
+        } else {
+            goback(c);
+            t->token = T_GREATERTHAN;
+        }
         break;
     default:
         if (isdigit(c)) {

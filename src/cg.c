@@ -5,6 +5,7 @@
 // Names of registers, and if they're free
 static int freereg[4];
 static char *reglist[4] = { "%r8", "%r9", "%r10", "%r11" };
+static char *breglist[4] = { "%r8b", "%r9b", "%r10b", "%r11b" }; // Lower 8 bytes of regiter
 
 // Set all registers as available
 void
@@ -116,6 +117,54 @@ cgdiv(int r1, int r2)
     fprintf(outfile, "\tmovq\t%%rax, %s\n", reglist[r1]);
     freeregister(r2);
     return (r1);
+}
+
+// List op possible compare instructions
+static char *cmplist[] = { "sete", "setne", "setl", "setg", "setle", "setge" };
+
+// Compare 2 registers and set if true
+int
+cgcompare_and_set(int ASToperation, int r1, int r2)
+{
+    // Check if it is a valid operation
+    if (ASToperation < A_EQUALS || ASToperation > A_GREATEREQUALS) {
+        fatal("Bad ASToperation in 'cgcompare_and_set()'");
+    }
+
+    fprintf(outfile, "\tcmpq\t%s, %s\n", reglist[r2], reglist[r1]);
+    fprintf(outfile, "\t%s\t%s\n", cmplist[ASToperation - A_EQUALS], breglist[r2]);
+    fprintf(outfile, "\tmovzbq\t%s, %s\n", breglist[r2], reglist[r2]);
+    freeregister(r1);
+    return (r2);
+}
+
+void
+cglabel(int l)
+{
+    fprintf(outfile, "L%d:\n", l);
+}
+
+void
+cgjump(int l)
+{
+    fprintf(outfile, "\tjmp\tL%d\n", l);
+}
+
+// List of inverted jump instructions,
+static char *invcmplist[] = { "jne", "je", "jge", "jle", "jg", "jl" };
+
+// Compare two registers and jump if false.
+int cgcompare_and_jump(int ASToperation, int r1, int r2, int label) {
+
+    // Check if it is a valid operation
+    if (ASToperation < A_EQUALS || ASToperation > A_GREATEREQUALS) {
+        fatal("Bad ASToperation in 'cgcompare_and_set()'");
+    }
+
+    fprintf(outfile, "\tcmpq\t%s, %s\n", reglist[r2], reglist[r1]);
+    fprintf(outfile, "\t%s\tL%d\n", invcmplist[ASToperation - A_EQUALS], label);
+    freeallregisters();
+    return (NOREG);
 }
 
 // Call printfuction from preamble to print register

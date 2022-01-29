@@ -31,9 +31,11 @@ main(int argc, char *argv[])
         exit(1);
     }
 
+    struct ASTnode *tree;
     scan(&token); // Get first token
     genpreamble();
-    statements(); // Parse statements
+    tree = compound_statement(); // Parse statements
+    genAST(tree, NOREG, 0);
     genpostamble();
 
     fclose(outfile);

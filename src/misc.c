@@ -28,6 +28,30 @@ ident(void)
     match(T_IDENT, "identifier");
 }
 
+void
+rightbrace(void)
+{
+    match(T_RIGHTBRACE, "}");
+}
+
+void
+leftbrace(void)
+{
+    match(T_LEFTBRACE, "{");
+}
+
+void
+rightparen(void)
+{
+    match(T_RIGHTPAREN, ")");
+}
+
+void
+leftparen(void)
+{
+    match(T_LEFTPAREN, "(");
+}
+
 // Fatal messages
 void fatal(char *s) {
   fprintf(stderr, "%s on line %d\n", s, line);
